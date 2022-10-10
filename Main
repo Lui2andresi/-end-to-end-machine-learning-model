@@ -49,14 +49,82 @@ for i in range(len(degrees)):
     plt.ylim((-2, 2))
     plt.legend(loc="best")
     plt.title("Modelo usando desde X^1 hasta X^{}".format(degrees[i]))
-    
+    plt.show()
     Pregunta 3: ¿Como podemos modificar el código anterior para incluir el cálculo del error y sistematizar la selección del grado máximo polinomial en la transformación de  X ?
   Comparando el modelo creado contra el verdadero y viendo el error en cada punto hasta tener un error promedio ,posteriormente compararlo con los demas grados polnomiales y asi obtener el de mayor exactitud
   
     Pregunta 4: ¿Cuales son otros hiperparámetros que incrementan la complejidad de los modelos? en el caso de:
 
-Regresión logística
-Árboles de decisión
-K-medias
-Redes neuronales
-plt.show()
+Regresión logística(Numero de polinomios)
+Árboles de decisión(Nodos)
+K-medias(centroides)
+Redes neuronales (entradas y salidas)
+
+
+
+
+
+#Reto sobre end-to-end machine learning model
+
+%matplotlib inline
+import matplotlib.pyplot as plt
+import seaborn as sns; sns.set()
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import StandardScaler
+df = pd.read_csv('insurance.csv')
+
+print(df.head())
+print(df.shape)
+
+
+target = df[['charges']]
+ls_features = df[['age','bmi']]
+X1 = ls_features
+y1 = target
+reg1 = LinearRegression().fit(X1, y1)
+
+score_1 = reg1.score(X1, y1)
+print('score_1:',score_1)
+
+dfnew=df.dropna()
+
+target = dfnew[['charges']]
+ls_features = dfnew[['age','bmi']]
+X2 = ls_features
+y2 = target
+reg2 = LinearRegression().fit(X2, y2)
+
+score_2 = reg2.score(X2, y2)
+print('score_2:',score_2)
+
+
+
+target = dfnew[['charges']]
+ls_features = dfnew[['age','bmi']]
+X3 = ls_features
+X3= StandardScaler().fit_transform(X)
+y3 = target
+reg3 = LinearRegression().fit(X, y)
+
+score_3 = reg3.score(X3, y3)
+print('score_3:',score_3)
+
+ndf=pd.get_dummies(df, columns=["sex","region",'children',"smoker"], prefix='', prefix_sep='') 
+ndf.head()
+
+ntarget = ndf[['charges']]
+nls_features = ndf[['age','bmi',"charges","northeast","southeast","southwest","0","1","2","3","4","5","yes","no"]]
+Xn = nls_features
+yn = ntarget
+nreg = LinearRegression().fit(Xn, yn)
+regnew = LinearRegression().fit(Xn, yn)
+
+score_4 = regnew.score(Xn, yn)
+print('score_4:',score_4)
+ls_scores = [score_1, score_2, score_3, score_4]
+plt.plot(ls_scores);
