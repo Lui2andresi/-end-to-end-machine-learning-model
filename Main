@@ -1,0 +1,62 @@
+Aproximar la función:
+
+Y=cos(1.5πX)  - - - - - - - - - - - - - - - -  ecuación1 
+
+utilizando una regresión lineal y con solo 30 observaciones de esta función
+
+Pregunta 1: ¿Cuales son las principales complicaciones de este planteamiento?
+
+R.- El problema surge de la idea de queres predecir una función no-lineal a travez de un metodo que propone una linealidad, aunado a esto el tener solo 30 observaciones
+sin ningun rango se tendria poco para entrenar el modelo
+
+Recordando el planteamiento de la regresión lineal, intentaremos estimar  y  a partir de  X , es decir:  y^=θTX 
+
+Sin embargo la respuesta de la pregunta 1 nos lleva a la conclusión de que no es posible estimar  y  a partir de  x  con una regresión lineal.
+
+Pero en el análisis de datos existen algunos artilugios matemáticos para solucionar este tipo de problemas.
+
+Lo que haremos es cambiar el planteamiento. Además de usar  X  usaremos algunas transformaciones no lineales de  X  y las usaremos como features adicionales.
+
+Por ejemplo:  X2 ,  X3 ,  X4 ,  ... ,  Xn  (transformaciones polinomiales)
+
+Los ejemplos anteriores son transformaciones polinomiales de grado 2, 3, 4, ..., n
+
+Y esto nos lleva a...
+
+Pregunta 2: ¿Cuántos grados son necesarios?
+
+Son necesarios 3+1 para aproximar a una función trigonometrica debido a su comportamiento,esto debido a la naturaleza de una función de 3er orden
+
+degrees = [1, 4, 15]
+
+plt.figure(figsize=(14, 5))
+for i in range(len(degrees)):
+    ax = plt.subplot(1, len(degrees), i + 1)
+    plt.setp(ax, xticks=(), yticks=())
+
+    polynomial_features = PolynomialFeatures(degree=degrees[i], include_bias=False)
+    linear_regression = LinearRegression()
+    pipeline = Pipeline([("polynomial_features", polynomial_features),("linear_regression", linear_regression),])
+    pipeline.fit(X[:, np.newaxis], y)
+
+    X_test = np.linspace(0, 1, 100)
+    plt.plot(X_test, pipeline.predict(X_test[:, np.newaxis]), label="Modelo creado")
+    plt.plot(X_test, true_fun(X_test), label="Función original")
+    plt.scatter(X, y, edgecolor="b", s=20, label="Muestra con ruido")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.xlim((0, 1))
+    plt.ylim((-2, 2))
+    plt.legend(loc="best")
+    plt.title("Modelo usando desde X^1 hasta X^{}".format(degrees[i]))
+    
+    Pregunta 3: ¿Como podemos modificar el código anterior para incluir el cálculo del error y sistematizar la selección del grado máximo polinomial en la transformación de  X ?
+  Comparando el modelo creado contra el verdadero y viendo el error en cada punto hasta tener un error promedio ,posteriormente compararlo con los demas grados polnomiales y asi obtener el de mayor exactitud
+  
+    Pregunta 4: ¿Cuales son otros hiperparámetros que incrementan la complejidad de los modelos? en el caso de:
+
+Regresión logística
+Árboles de decisión
+K-medias
+Redes neuronales
+plt.show()
